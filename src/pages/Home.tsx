@@ -96,6 +96,7 @@ const Home: React.FC = () => {
         stagger: 0.15,
         duration: 0.8,
         ease: 'power3.out',
+        immediateRender: false,
       })
 
       // Counter animation for stat numbers
@@ -130,6 +131,7 @@ const Home: React.FC = () => {
         y: 40,
         duration: 0.8,
         ease: 'power3.out',
+        immediateRender: false,
       })
 
       // Course cards — slide in from alternating sides
@@ -144,6 +146,7 @@ const Home: React.FC = () => {
         stagger: 0.2,
         duration: 0.9,
         ease: 'power3.out',
+        immediateRender: false,
       })
 
       // Features heading
@@ -157,6 +160,7 @@ const Home: React.FC = () => {
         y: 40,
         duration: 0.8,
         ease: 'power3.out',
+        immediateRender: false,
       })
 
       // Feature cards — reveal from below with stagger
@@ -171,6 +175,7 @@ const Home: React.FC = () => {
         stagger: 0.18,
         duration: 0.85,
         ease: 'back.out(1.4)',
+        immediateRender: false,
       })
 
       // CTA section slide up
@@ -185,6 +190,7 @@ const Home: React.FC = () => {
         y: 40,
         duration: 0.9,
         ease: 'power3.out',
+        immediateRender: false,
       })
     })
 
