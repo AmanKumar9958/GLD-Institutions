@@ -1,32 +1,74 @@
-import React from 'react'
+import React, { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import { BookOpen, Computer, Briefcase, CheckCircle, Clock, GraduationCap, Compass } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
+const toId = (title: string) => title.replace(/\s+/g, '-').toLowerCase()
+
+const courseCategories = [
+  { 
+    icon: BookOpen, 
+    title: "Academic Courses",
+    accent: 'from-primary to-primary-dark',
+    description: "Strong foundation classes with disciplined guidance and regular assessments.",
+    courses: ["8th-10th All subjects", "11th & 12th PCB", "11th & 12th Arts"] 
+  },
+  { 
+    icon: Computer, 
+    title: "Technical Courses",
+    accent: 'from-red-DEFAULT to-red-dark',
+    description: "Future-ready skills with hands-on sessions and project based learning.",
+    courses: ["Computer", "Spoken English"] 
+  },
+  { 
+    icon: Briefcase, 
+    title: "Competitive Courses",
+    accent: 'from-primary-dark to-red-DEFAULT',
+    description: "Mentorship-driven preparation for banking, SSC, railways and state services.",
+    courses: ["Banking", "SSC", "Railway", "UPSC", "State PSCs", "Delhi Police", "UP Police", "DSSSB"] 
+  }
+]
+
 const Courses: React.FC = () => {
-  const courseCategories = [
-    { 
-      icon: BookOpen, 
-      title: "Academics Courses",
-      accent: 'from-primary to-primary-dark',
-      description: "Strong foundation classes with disciplined guidance and regular assessments.",
-      courses: ["8th-10th All subjects", "11th & 12th PCB", "11th & 12th Arts"] 
-    },
-    { 
-      icon: Computer, 
-      title: "Technical Courses",
-      accent: 'from-red-DEFAULT to-red-dark',
-      description: "Future-ready skills with hands-on sessions and project based learning.",
-      courses: ["Computer", "Spoken English"] 
-    },
-    { 
-      icon: Briefcase, 
-      title: "Competitive Courses",
-      accent: 'from-primary-dark to-red-DEFAULT',
-      description: "Mentorship-driven preparation for banking, SSC, railways and state services.",
-      courses: ["Banking", "SSC", "Railway", "UPSC", "State PSCs", "Delhi Police", "UP Police", "DSSSB"] 
+  const defaultCategory = courseCategories[0].title
+  const [activeCategory, setActiveCategory] = useState(() => defaultCategory)
+
+  const visibleCategories = useMemo(
+    () => courseCategories.filter(({ title }) => title === activeCategory),
+    [activeCategory]
+  )
+  const categoryTitles = courseCategories.map(({ title }) => title)
+
+  const handleKeyDown = (title: string, event: React.KeyboardEvent<HTMLButtonElement>) => {
+    const currentIndex = categoryTitles.indexOf(title)
+    if (currentIndex === -1) return
+
+    const prevIndex = (currentIndex - 1 + categoryTitles.length) % categoryTitles.length
+    const nextIndex = (currentIndex + 1) % categoryTitles.length
+
+    switch (event.key) {
+      case 'ArrowLeft':
+      case 'ArrowUp':
+        event.preventDefault()
+        setActiveCategory(categoryTitles[prevIndex])
+        break
+      case 'ArrowRight':
+      case 'ArrowDown':
+        event.preventDefault()
+        setActiveCategory(categoryTitles[nextIndex])
+        break
+      case 'Home':
+        event.preventDefault()
+        setActiveCategory(categoryTitles[0])
+        break
+      case 'End':
+        event.preventDefault()
+        setActiveCategory(categoryTitles[categoryTitles.length - 1])
+        break
+      default:
+        break
     }
-  ]
+  }
 
   const highlights = [
     { icon: CheckCircle, title: 'Structured Roadmaps', desc: 'Topic-wise plans, revision loops and doubt clearance built into every batch.' },
@@ -113,11 +155,45 @@ const Courses: React.FC = () => {
             <p className="text-gray-600 max-w-2xl mx-auto">Every stream includes guided mentoring, practice material, mock tests and feedback loops.</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {courseCategories.map(({ icon: Icon, title, description, courses, accent }) => (
+          <div className="flex flex-wrap justify-center gap-3 mb-10" role="tablist" aria-label="Course categories">
+            {courseCategories.map(({ title }) => {
+              const isActive = title === activeCategory
+              const tabId = `tab-${toId(title)}`
+              const panelId = `panel-${toId(title)}`
+              return (
+                <motion.button
+                  key={title}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={() => setActiveCategory(title)}
+                  onKeyDown={(event) => handleKeyDown(title, event)}
+                  role="tab"
+                  id={tabId}
+                  aria-selected={isActive}
+                  aria-controls={panelId}
+                  tabIndex={isActive ? 0 : -1}
+                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all border ${
+                    isActive
+                      ? 'bg-primary text-white shadow-md border-primary-light'
+                      : 'bg-white text-primary border-gray-200 hover:border-primary/60 hover:text-primary-dark'
+                  }`}
+                >
+                  {title}
+                </motion.button>
+              )
+            })}
+          </div>
+
+          <div className="grid gap-8 md:grid-cols-1 max-w-4xl mx-auto">
+            {visibleCategories.map(({ icon: Icon, title, description, courses, accent }) => {
+              const panelId = `panel-${toId(title)}`
+              const tabId = `tab-${toId(title)}`
+              return (
               <motion.div
                 key={title}
                 whileHover={{ y: -6 }}
+                role="tabpanel"
+                id={panelId}
+                aria-labelledby={tabId}
                 className="group rounded-2xl border border-gray-100 shadow-sm overflow-hidden transition-all duration-300"
               >
                 <div className={`p-6 text-white bg-gradient-to-br ${accent}`}>
@@ -138,7 +214,7 @@ const Courses: React.FC = () => {
                   </ul>
                 </div>
               </motion.div>
-            ))}
+            )})}
           </div>
         </div>
       </section>
