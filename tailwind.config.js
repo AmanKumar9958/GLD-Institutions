@@ -10,7 +10,13 @@ export default {
       colors: {
         primary: {
           DEFAULT: '#1E3A8A',
-          light: '#2563EB'
+          light: '#2563EB',
+          dark: '#172D6E'
+        },
+        red: {
+          DEFAULT: '#DC2626',
+          light: '#EF4444',
+          dark: '#B91C1C'
         },
         accent: {
           green: '#10B981',
